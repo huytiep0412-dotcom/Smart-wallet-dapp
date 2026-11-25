@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartWallet DApp | Ví điện tử blockchain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sticky Top Navbar -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <span class="brand-strong">SmartWallet</span>
+          <span class="brand-light">DApp</span>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <button type="button" class="net-pill" id="btnNetPill" title="Nhấn để cấu hình mạng & tài khoản">
+          <span class="status-dot online" id="navStatusDot"></span>
+          <span class="net-name" id="navNetName">Ganache Localhost</span>
+          <span class="net-sep">·</span>
+          <span class="net-chain" id="navChainId">Chain 1337</span>
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-ghost" id="btnOpenConfig">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="21" y2="21"/><line x1="4" x2="20" y1="3" y2="3"/>
+            <line x1="4" x2="20" y1="12" y2="12"/><circle cx="14" cy="3" r="2"/>
+            <circle cx="8" cy="12" r="2"/><circle cx="16" cy="21" r="2"/>
+          </svg>
+          <span>Cấu hình</span>
+        </button>
+        <button type="button" class="btn-mint" id="btnConnectWallet">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+          <span id="connectBtnLabel">Kết nối ví</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <!-- Page Intro Row -->
+    <section class="intro-row">
+      <div>
+        <div class="eyebrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="8" height="8" rx="2"/><rect x="14" y="2" width="8" height="8" rx="2"/>
+            <rect x="2" y="14" width="8" height="8" rx="2"/><rect x="14" y="14" width="8" height="8" rx="2"/>
+          </svg>
+          <span>KHÔNG GIAN TÀI CHÍNH CỦA BẠN</span>
+        </div>
+        <h1 class="page-title">Tổng quan ví</h1>
+        <p class="page-sub">Quản lý tài sản và theo dõi hoạt động on-chain.</p>
+      </div>
+      <div class="intro-right">
+        <div class="security-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5bd5af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          <span>Bảo mật bởi Ethereum</span>
+          <span class="dot-sep">·</span>
+          <span id="lastUpdatedText">Cập nhật vừa xong</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: Overview Bento Grid -->
+    <section class="bento-grid">
+      <!-- Left Hero Card: Smart Contract Balance -->
+      <div class="hero-card">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-top">
+          <div class="hero-title-group">
+            <span class="hero-label">Số dư trong hợp đồng</span>
+            <span class="pill-badge emerald">SMART CONTRACT</span>
+          </div>
+          <div class="hero-actions">
+            <button type="button" class="btn-refresh" id="btnRefresh">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="refreshIcon">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 16h5v5"/>
+              </svg>
+              <span>Làm mới số dư</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-balance-row">
+          <div class="hero-main-bal">
+            <span class="hero-figure" id="balEth">0.00</span>
+            <span class="hero-unit">ETH</span>
+          </div>
+        </div>
+
+        <div class="hero-usd-row">
+          <span class="usd-val" id="balUsd">≈ $0.00 USD</span>
+          <span class="usd-delta" id="balDelta">+2.4%</span>
+        </div>
+
+        <div class="hero-divider"></div>
+
+        <div class="hero-footer">
+          <div class="hero-status-item">
+            <span class="status-dot online" id="heroModeDot"></span>
+            <span id="heroModeLabel">Ganache trực tiếp</span>
+          </div>
+          <div class="hero-status-item mono-muted" id="heroContractShort">
+            Contract: Chưa cấu hình
+          </div>
+          <button type="button" class="link-action" id="btnHeroConfig">
+            <span>Cấu hình contract</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" x2="21" y1="14" y2="3"/>
+            </svg>
+          </button>
+          <button type="button" class="link-action" id="btnOpenAdmin" title="Quản trị khẩn cấp Circuit Breaker">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5bd5af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Quản trị (Owner)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right 2x2 Sub-grid -->
+      <div class="bento-right">
+        <!-- Sub-card 1: Personal Wallet Balance -->
+        <div class="surface-card">
+          <div class="subcard-head">
+            <span class="subcard-title" id="walletSourceTitle">Ví cá nhân (EOA)</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64727f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+            </svg>
+          </div>
+          <div class="subcard-metric">
+            <span class="subcard-value" id="ownEth">0.00</span>
+            <span class="subcard-unit">ETH</span>
+          </div>
+          <div class="subcard-foot">
+            <span id="ownPct">Số dư khả dụng trong ví</span>
+          </div>
+        </div>
+
+        <!-- Sub-card 2: Active Wallet Address -->
+        <div class="surface-card">
+          <div class="subcard-head">
+            <span class="subcard-title">Địa chỉ ví</span>
+            <button type="button" class="icon-btn" id="btnCopyMyAddr" title="Sao chép địa chỉ ví">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+            </button>
+          </div>
+          <div class="subcard-addr mono" id="meShort" title="">0x...</div>
+          <div class="subcard-foot addr-switcher-wrap">
+            <span class="status-dot online"></span>
+            <select id="quickAccountSelect" class="quick-account-select" title="Chuyển nhanh tài khoản Ganache">
+              <option value="">Ví đang hoạt động</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Sub-card 3 (Full span): Active Network & Balance Lookup trigger -->
+        <div class="surface-card col-span-2 net-card">
+          <div class="net-card-left">
+            <div class="net-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5da9e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="net-card-title">Mạng đang hoạt động</div>
+              <div class="net-card-sub mono" id="activeRpcDisplay">Ganache · http://127.0.0.1:7545</div>
+            </div>
+          </div>
+          <div class="net-card-right">
+            <button type="button" class="btn-lookup-trigger" id="btnOpenLookup" title="Tra cứu số dư on-chain của bất kỳ địa chỉ nào">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span>Tra cứu số dư</span>
+            </button>
+            <span class="pill-badge local" id="netBadgeType">LOCAL</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Transaction Actions & Cashflow Analytics -->
+    <section class="mid-grid">
+      <!-- Left: Transaction Operations -->
+      <div class="surface-card panel-card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Thao tác giao dịch</h2>
+            <p class="panel-sub">Tương tác trực tiếp với smart contract (Native ETH)</p>
+          </div>
+        </div>
+
+        <!-- 3-tab Segmented Control -->
+        <div class="segmented-tabs" id="txTabs">
+          <button type="button" class="seg-tab active" data-tab="deposit">Nạp tiền</button>
+          <button type="button" class="seg-tab" data-tab="withdraw">Rút tiền</button>
+          <button type="button" class="seg-tab" data-tab="transfer">Chuyển</button>
+        </div>
+
+        <form id="txForm" class="tx-form" autocomplete="off">
+          <input type="hidden" id="asset" value="ETH" />
+
+          <div class="field-group">
+            <div class="field-label-row">
+              <label for="amount">Số lượng (<span id="amountUnitLabel">ETH</span>)</label>
+              <span class="field-hint" id="txMethodHint">Hàm: depositETH()</span>
+            </div>
+            <div class="amount-input-box">
+              <input
+                type="text"
+                id="amount"
+                inputmode="decimal"
+                placeholder="0.00"
+                required
+              />
+              <div class="amount-right">
+                <span class="amount-unit" id="inputAssetUnit">ETH</span>
+                <div class="quick-pct-group" id="quickPctGroup">
+                  <button type="button" class="pct-chip" data-pct="0.25">25%</button>
+                  <button type="button" class="pct-chip" data-pct="0.5">50%</button>
+                  <button type="button" class="pct-chip" data-pct="1">100%</button>
+                </div>
+              </div>
+            </div>
+            <div class="balance-hint-row">
+              <span id="availBalanceLabel">Số dư ví</span>
+              <span class="mono" id="availBalanceValue">0.00 ETH</span>
+            </div>
+          </div>
+
+          <!-- Transfer Recipient Field (shown only on Transfer tab) -->
+          <div class="field-group" id="recipientGroup" hidden>
+            <div class="field-label-row">
+              <label for="toAddr">Địa chỉ người nhận</label>
+              <div class="contact-picker-wrap">
+                <select id="contactQuickSelect" class="contact-select">
+                  <option value="">Sổ địa chỉ ▾</option>
+                </select>
+              </div>
+            </div>
+            <div class="text-input-box">
+              <input
+                type="text"
+                id="toAddr"
+                class="mono"
+                placeholder="0x..."
+              />
+            </div>
+          </div>
+
+          <!-- Transaction Note Field -->
+          <div class="field-group" id="noteGroup">
+            <div class="field-label-row">
+              <label for="txNote">Ghi chú giao dịch</label>
+              <span class="field-hint">Lưu kèm lịch sử</span>
+            </div>
+            <div class="text-input-box">
+              <input
+                type="text"
+                id="txNote"
+                placeholder="Ví dụ: Nạp vốn ban đầu / Thanh toán thiết kế"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-gradient" id="btnSubmitTx">
+            <span id="submitBtnIcon" class="btn-icon-inline">↙</span>
+            <span id="submitBtnText">Xác nhận nạp tiền</span>
+          </button>
+
+          <div class="tx-security-foot">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span id="txFootNote">Giao dịch được bảo vệ chống Reentrancy & kiểm tra số dư on-chain</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right: Cashflow Analytics -->
+      <div class="surface-card panel-card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Phân tích dòng tiền</h2>
+            <p class="panel-sub">Thống kê hoạt động tài khoản</p>
+          </div>
+          <select id="chartRangeSelect" class="filter-select sm">
+            <option value="7d">7 ngày</option>
+            <option value="30d">30 ngày</option>
+            <option value="all">Tất cả</option>
+          </select>
+        </div>
+
+        <!-- 3 Compact KPI Sub-cards -->
+        <div class="kpi-row">
+          <div class="kpi-subcard">
+            <div class="kpi-label deposit">
+              <span>↙</span>
+              <span>Tổng nạp</span>
+            </div>
+            <div class="kpi-value" id="kpiTotalIn">0.00 ETH</div>
+          </div>
+          <div class="kpi-subcard">
+            <div class="kpi-label withdraw">
+              <span>↗</span>
+              <span>Tổng rút</span>
+            </div>
+            <div class="kpi-value" id="kpiTotalOut">0.00 ETH</div>
+          </div>
+          <div class="kpi-subcard">
+            <div class="kpi-label activity">
+              <span>⚡</span>
+              <span>Giao dịch</span>
+            </div>
+            <div class="kpi-value" id="kpiTxCount">0</div>
+          </div>
+        </div>
+
+        <!-- Bar Chart -->
+        <div class="chart-section">
+          <div class="chart-head">
+            <span>Biến động số dư</span>
+            <span class="mono" id="chartUnitLabel">ETH</span>
+          </div>
+          <div class="chart-canvas">
+            <div class="chart-grid-line" style="bottom: 75%"></div>
+            <div class="chart-grid-line" style="bottom: 50%"></div>
+            <div class="chart-grid-line" style="bottom: 25%"></div>
+            <div class="chart-bars" id="chartBars">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Summary Bar -->
+        <div class="chart-summary-bar">
+          <span class="summary-label">Số dư trung bình</span>
+          <div class="summary-right">
+            <strong id="avgBalanceText">0.00 ETH</strong>
+            <span class="summary-delta" id="avgDeltaText">↑ 12.8%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Transaction Ledger & Address Book Sidebar -->
+    <section class="bottom-grid">
+      <!-- Left: Transaction History Table -->
+      <div class="surface-card panel-card table-panel">
+        <div class="panel-head table-head-bar">
+          <div>
+            <h2 class="panel-title">Lịch sử giao dịch</h2>
+            <p class="panel-sub">Theo dõi và tra cứu hoạt động on-chain</p>
+          </div>
+          <div class="table-filters">
+            <div class="search-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="searchTxInput" placeholder="Tìm giao dịch..." />
+            </div>
+            <select id="filterTxType" class="filter-select">
+              <option value="all">Tất cả của tôi</option>
+              <option value="0">Nạp tiền</option>
+              <option value="1">Rút tiền</option>
+              <option value="2">Chuyển đi</option>
+              <option value="3">Nhận được</option>
+              <option value="public">Sổ cái toàn mạng</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>GIAO DỊCH</th>
+                <th>ĐỊA CHỈ</th>
+                <th>SỐ LƯỢNG</th>
+                <th>SỐ DƯ SAU GD</th>
+                <th>GHI CHÚ</th>
+                <th>THỜI GIAN</th>
+                <th>TRẠNG THÁI</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="txEmptyState" class="empty-state" hidden>
+          Chưa có giao dịch nào khớp với bộ lọc.
+        </div>
+
+        <div class="table-footer">
+          <span class="table-count" id="txShowingText">Hiển thị 0 / 0 giao dịch</span>
+          <div class="pager-controls">
+            <button type="button" class="btn-pager" id="btnPrevPage" disabled>← Mới hơn</button>
+            <span class="pager-info" id="pagerInfoText">Trang 1 / 1</span>
+            <button type="button" class="btn-pager" id="btnNextPage" disabled>Cũ hơn →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar: Address Book & Audit Callout -->
+      <aside class="sidebar-col">
+        <div class="surface-card panel-card">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">Danh bạ ví</h2>
+              <p class="panel-sub">Địa chỉ thường dùng</p>
+            </div>
+            <button type="button" class="btn-icon-square" id="btnAddContact" title="Thêm địa chỉ mới">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="contact-list" id="contactList">
+            <!-- Populated by JS -->
+          </div>
+
+          <button type="button" class="btn-dashed-full" id="btnManageContacts">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            </svg>
+            <span>Thêm địa chỉ vào danh bạ</span>
+          </button>
+
+          <!-- Audit Log Callout -->
+          <div class="audit-callout">
+            <div class="audit-head">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5bd5af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              <span>Nhật ký kiểm toán</span>
+            </div>
+            <p class="audit-desc">
+              Mọi giao dịch được ghi lại minh bạch trên blockchain và không thể chỉnh sửa.
+            </p>
+            <ul class="live-audit-log" id="liveAuditLog"></ul>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        © 2026 SmartWallet DApp · Đồ án Lập trình Blockchain
+      </div>
+      <div class="footer-right">
+        <a href="# Remix" id="linkDocs" class="footer-link">Tài liệu</a>
+        <a href="# Help" id="linkHelp" class="footer-link">Trợ giúp</a>
+        <span class="footer-status">
+          <span class="status-dot online"></span>
+          <span>Hệ thống hoạt động</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL 1: Smart Contract & Connection Config -->
+  <div class="modal-backdrop" id="configModal" hidden>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Cấu hình kết nối</h3>
+          <p class="modal-sub">Chọn phương thức kết nối mạng Ganache / MetaMask</p>
+        </div>
+        <button type="button" class="modal-close" data-close="configModal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field-group">
+          <label for="connModeSelect">Chế độ kết nối</label>
+          <select id="connModeSelect" class="modal-input">
+            <option value="ganache">Ganache trực tiếp (10 tài khoản local)</option>
+            <option value="metamask">Ví MetaMask (Injected Web3 Provider)</option>
+          </select>
+        </div>
+
+        <div class="field-row-2" id="ganacheConfigRow">
+          <div class="field-group">
+            <label for="rpcUrlInput">RPC Ganache URL</label>
+            <input type="text" id="rpcUrlInput" class="modal-input mono" value="http://127.0.0.1:7545" />
+          </div>
+          <div class="field-group">
+            <label for="ganacheAccountSelect">Tài khoản Ganache</label>
+            <select id="ganacheAccountSelect" class="modal-input mono"></select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="walletAddrInput">Địa chỉ SmartWallet Contract</label>
+          <input type="text" id="walletAddrInput" class="modal-input mono" placeholder="0x..." />
+        </div>
+
+        <button type="button" class="btn-submit-gradient full" id="btnSaveConfig">
+          Lưu cấu hình & Kết nối
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1B: Quản trị khẩn cấp (Circuit Breaker) -->
+  <div class="modal-backdrop" id="adminModal" hidden>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Quản trị khẩn cấp (Circuit Breaker)</h3>
+          <p class="modal-sub">Dành riêng cho Owner quản lý tạm dừng & hạn mức</p>
+        </div>
+        <button type="button" class="modal-close" data-close="adminModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="admin-circuit-box" style="margin-top:0">
+          <div class="admin-circuit-head">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5bd5af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Trạng thái hệ thống:</span>
+            <span class="circuit-status-tag" id="circuitStatusTag">Bình thường</span>
+          </div>
+          <div class="admin-circuit-actions">
+            <button type="button" class="btn-circuit-toggle" id="btnTogglePause">
+              Tạm dừng khẩn cấp (Pause)
+            </button>
+            <div class="admin-limit-row">
+              <input type="text" id="maxLimitInput" class="modal-input mono sm" placeholder="Hạn mức rút (ETH, 0=vô hạn)" />
+              <button type="button" class="btn-subtle sm" id="btnSaveMaxLimit">Đặt hạn mức</button>
+            </div>
+            <div class="admin-transfer-owner-box" style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+              <label for="newOwnerInput" style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 6px;">Bàn giao quyền Quản trị (Transfer Ownership):</label>
+              <div class="admin-limit-row">
+                <input type="text" id="newOwnerInput" class="modal-input mono sm" placeholder="Địa chỉ Owner mới (0x...)" />
+                <button type="button" class="btn-subtle sm" id="btnTransferOwnership" style="border-color:#f59e0b; color:#f59e0b;">Chuyển quyền</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-secondary full" data-close="adminModal" style="margin-top:16px">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Transaction Detail -->
+  <div class="modal-backdrop" id="txDetailModal" hidden>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Chi tiết giao dịch</h3>
+        <button type="button" class="modal-close" data-close="txDetailModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="kv-list" id="txDetailList">
+          <!-- Populated by JS -->
+        </div>
+        <button type="button" class="btn-modal-secondary full" data-close="txDetailModal">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Balance Lookup (Kiểm tra số dư ví bất kỳ) -->
+  <div class="modal-backdrop" id="lookupModal" hidden>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Tra cứu số dư ví bất kỳ</h3>
+          <p class="modal-sub">Truy vấn trực tiếp số dư on-chain của ví trên Smart Contract</p>
+        </div>
+        <button type="button" class="modal-close" data-close="lookupModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <div class="field-label-row">
+            <label for="lookupAddrInput">Địa chỉ ví cần kiểm tra</label>
+            <select id="lookupQuickSelect" class="contact-select">
+              <option value="">Chọn nhanh địa chỉ ▾</option>
+            </select>
+          </div>
+          <input type="text" id="lookupAddrInput" class="modal-input mono" placeholder="0x..." />
+        </div>
+        <button type="button" class="btn-submit-gradient full" id="btnRunLookup">
+          Kiểm tra số dư on-chain
+        </button>
+        <div id="lookupResultBox" class="lookup-result-box" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Add Contact -->
+  <div class="modal-backdrop" id="contactModal" hidden>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Thêm địa chỉ vào danh bạ</h3>
+          <p class="modal-sub">Lưu địa chỉ thường dùng để chuyển tiền nhanh</p>
+        </div>
+        <button type="button" class="modal-close" data-close="contactModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label for="contactNameInput">Tên gợi nhớ</label>
+          <input type="text" id="contactNameInput" class="modal-input" placeholder="Ví dụ: Ví nhận 03 / Tài khoản đối tác" />
+        </div>
+        <div class="field-group">
+          <label for="contactAddrInput">Địa chỉ ví Ethereum (0x...)</label>
+          <input type="text" id="contactAddrInput" class="modal-input mono" placeholder="0x..." />
+        </div>
+        <button type="button" class="btn-submit-gradient full" id="btnSaveContact">
+          Lưu vào danh bạ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="lib/web3.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

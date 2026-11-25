@@ -1,0 +1,22 @@
+{
+  "name": "simple-wallet-dapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hop dong thong minh quan ly vi dien tu don gian: nap, rut, chuyen token, kiem tra so du, lich su giao dich (Solidity, Remix IDE, Ganache)",
+  "scripts": {
+    "postinstall": "node scripts/copy-web3.js",
+    "ganache": "ganache --server.port 7545 --chain.chainId 1337 --chain.networkId 5777 --wallet.deterministic --miner.blockGasLimit 12000000",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js --network ganache",
+    "web": "node server.js",
+    "dev": "node server.js",
+    "demo": "hardhat run scripts/demo.js --network ganache"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "ganache": "^7.9.2",
+    "hardhat": "^2.22.15",
+    "web3": "^4.15.0"
+  }
+}
